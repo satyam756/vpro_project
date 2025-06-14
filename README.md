@@ -252,3 +252,77 @@ sql dump file:
     -   `systemctl status rabbitmq-server | grep active`
 
 <br>
+
+# 4) Update IP to name mapping in Route53
+
+-   repo/src/resources/application.properties: contains the hostname and other properties which was getting resolved in local system using /etc/hostname
+
+-   in cloud requires private DNS service that can resolve name to ip for the instances.
+
+>   Create a Hosted zone in Route53
+
+-   Route 53 > Create hosted zone > Domain name > vprofile.in > Type > Private hosted zone > Region > US East (N. Virginia) > VPC > Default > Create hosted zone
+
+>   Add the Private IP addresses of the instances in route53 and create the records
+
+-   EC2 > Instances > vpro-db01 > copy private ip > Route 53 > Hosted zones > vprofile.in > Create record > Record name > db01 > Record Type > A > Value > Paste the IP > Create records
+
+-   EC2 > Instances > vpro-mc01 > copy private ip > Route 53 > Hosted zones > vprofile.in > Create record > Record name > mc01 > Record Type > A > Value > Paste the IP > Create records
+
+-   EC2 > Instances > vpro-rmq01 > copy private ip > Route 53 > Hosted zones > vprofile.in > Create record > Record name > rmq01 > Record Type > A > Value > Paste the IP > Create records
+
+-   EC2 > Instances > vpro-app01 > copy private ip > Route 53 > Hosted zones > vprofile.in > Create record > Record name > app01 > Record Type > A > Value > Paste the IP > Create records
+
+>   Verify if Rout53 is resolving the name to ip:
+
+-   EC2 > Instances > vpro-app01 > copy public ip > `ssh -i public_key ubuntu@public_ip` > `ping -c 4 db01.vprofile.in`
+
+<br>
+
+# 5) Build and Deploy Artifacts in S3
+
+<br>
+
+<figure>
+<img src="./S3.png" alt="Architecture Diagram" />
+<figcaption><b><p>Architecture Diagram</p></b></figcaption>  
+</figure>
+
+<br>
+
+-   Building Artifacts locally using maven
+
+    -   Requires JDK & Maven
+
+-   Pushing Artifacts to AWS S3 
+
+    -   Requires AWS CLI & S3 Bucket creation
+
+-   To move Artifacts from local to S3 bucket requires IAM Auth Key for the user
+
+-   To Download the Artifacts from S3 to Tomcat instance Requires IAM Role 
+
+>   Create S3 Bucket to Store the Artifacts:
+
+-   Amazon S3 > Buckets > Create bucket > Bucket name > vpro-las-artifactnew > Create bucket
+
+>   Create a user for S3 Admin
+
+-   IAM > Users > Create user > User name > vpro-s3-admin > next > Attach policies directly > AmazonS3FullAccess > next > Create user
+
+-   IAM > Users > vpro-s3-admin > security credentials > Create access key > CLI > next > create access key > copy access key and secret.
+
+>   Create a Role for instances:
+
+-   IAM > Roles > Create role > AWS service > Use case (EC2) > next > Permissions policies > AmazonS3FullAccess > next > Role name > vpro-s3-admin-role > Create role
+
+>   Attach the Role to app01 (Tomcat) instance
+
+-   EC2 > Instances > vpro-app01 > Actions > Security > Modify IAM role > vpro-s3-admin-role > Update IAM role
+
+>   Update the repo/src/resources/application.properties file with the record names created in route 53
+
+
+>   Build the Artifact using Maven
+
+-   cd repo/src > mvn install
