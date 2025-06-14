@@ -225,3 +225,30 @@ sql dump file:
     -   Advanced details > User data > paste the <b>tomcat_ubuntu.sh</b> script file from userdata > Launch instance.
 
 <br>
+
+> Services Verification in Instance:
+
+-   EC2 > Instances > vpro-db01 > copy public IPv4 address
+
+    -   open git bash/Terminal  
+    -   `ssh -i /path/keypair.pem ec2-user@PublicIP`
+    -   `systemctl status mariadb | grep active`
+    -   `mysql -u root -padmin123 accounts;`
+
+<br>
+
+-   EC2 > Instances > vpro-mc01 > copy public IPv4 address
+
+    -   open git bash/Terminal
+    -   `ssh -i /path/keypair.pem ec2-user@PublicIP`
+    -   `systemctl status memcached | grep active`
+
+<br>
+
+-   EC2 > Instances > vpro-rmq01 > copy public IPv4 address
+
+    -   open git bash/Terminal
+    -   `ssh -i /path/keypair.pem ec2-user@PublicIP`
+    -   `systemctl status rabbitmq-server | grep active`
+
+<br>
