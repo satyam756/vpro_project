@@ -326,3 +326,38 @@ sql dump file:
 >   Build the Artifact using Maven
 
 -   cd repo/src > mvn install
+
+-   it will create a target folder - vpro-v2.war
+
+>   Copy the Artifacts to S3 bucket
+
+-   open Git bash/Terminal
+
+    -   `aws configure`
+    -   `AWS Access Key ID [None]:` provide the access key id
+    -   `AWS Secret Access Key [None]:` provide the secret key id
+    -   `Default region name [us-east-1]:` provide the default region
+    -   `Default output format [json]:` json
+
+-   Credentials are stored in : ~/.aws/credentials
+
+-   `aws s3 cp target/vpro-v2.war s3://vpro-las-artifactnew/`
+
+-   list the bucket contents: `aws s3 ls s3://vpro-las-artifactnew/`
+
+>   Download the Artifacts from S3 to Tomcat instance
+
+-   Get the Public ip of app01 instance:
+
+    -   EC2 > instances > vpro-app01 > public IPv4 address > copy
+    -   open git bash/Terminal
+    -   `ssh -i keypair.pem ubuntu@publicip`
+    -   `sudo -i`
+    -   `snap install aws-cli --classic`
+    -   `aws s3 cp s3://vpro-las-artifactnew/vpro-v2.war /tmp`
+    -   `systemctl stop tomcat10`
+    -   `systemctl damon-reload`
+    -   `systemctl stop tomcat10`
+    -   `rm -rf /var/lib/tomcat10/webapps/`
+    -   `cp /tmp/vpro-v2.war /var/lib/tomcat10/webapps/ROOT.war`
+    -   `systemctl start tomcat10`
