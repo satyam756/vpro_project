@@ -167,3 +167,61 @@ sql dump file:
 -   MySQL , MemCache, RabbitMQ Goes to <b>vpro-backend-sg</b> security group.
 
 -   Tomcat Instance goes to <b>vpro-app-sg</b> security group.
+
+<br>
+
+>   MySQL Instance:
+
+-   EC2 > Instances > Launch instances
+
+    -   Name: vpro-db01
+    -   AMI: Amazon Linux
+    -   Amazon Linux(Free Tier)
+    -   Instance Type: t2.micro
+    -   Key pair (login) : Select the key pair name 
+    -   Network settings > Firewall (security groups) > Select existing security group > Common security groups > <b>vpro-backend-sg</b>
+    -   Advanced details > User data > paste the <b>mysql.sh</b> script file from userdata > Launch instance.
+
+<br>
+
+>   Memcache Instance:
+
+-   EC2 > Instances > Launch instances
+
+    -   Name: vpro-mc01
+    -   AMI: Amazon Linux
+    -   Amazon Linux(Free Tier)
+    -   Instance Type: t2.micro
+    -   Key pair (login) : Select the key pair name 
+    -   Network settings > Firewall (security groups) > Select existing security group > Common security groups > <b>vpro-backend-sg</b>
+    -   Advanced details > User data > paste the <b>memcache.sh</b> script file from userdata > Launch instance.
+
+<br>
+
+>   RabbitMQ Instance:
+
+-   EC2 > Instances > Launch instances
+
+    -   Name: vpro-rmq01
+    -   AMI: Amazon Linux
+    -   Amazon Linux(Free Tier)
+    -   Instance Type: t2.micro
+    -   Key pair (login) : Select the key pair name 
+    -   Network settings > Firewall (security groups) > Select existing security group > Common security groups > <b>vpro-backend-sg</b>
+    -   Advanced details > User data > paste the <b>rabbitmq.sh</b> script file from userdata > Launch instance.
+
+<br>
+
+>   Tomcat Instance:
+
+-   EC2 > Instances > Launch instances
+
+    -   Name: vpro-app01
+    -   AMI: Ubuntu
+    -   Ubuntu Server 24.04 LTS(Free Tier)
+    -   Instance Type: t2.micro
+    -   Key pair (login) : Select the key pair name 
+    -   Network settings > Firewall (security groups) > Select existing security group > Common security groups > <b>vpro-app-sg</b>
+    -   Advanced details > User data > paste the <b>tomcat_ubuntu.sh</b> script file from userdata > Launch instance.
+
+<br>
