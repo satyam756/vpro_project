@@ -391,3 +391,21 @@ sql dump file:
     -   copy the DNS name from load balancer > Godaddy > Domain > DNS > Add New Record > name > vproapp > value > paste the dns name > Save
 
 >   To access the secure connection site: https://vproapp.satyamtripathi.xyz
+
+<br>
+
+# 7) Create Auto Scaling Group for the Application instance
+
+>   Create an AMI of app01 instance also the launch template (Security group, Key pairs) used during launch of new instance.
+
+-   AMI Creation
+
+    -   EC2 > Instances > vpro-app01 > Actions > Image and templates > Create image > image name > vpro-app-tomcat > Create image
+
+-   Launch Template Creation
+
+    -   EC2 > Launch Templates > Create launch template > name > vpro-app01-asg-lt > AMI > vpro-app-tomcat > Type > t2.micro > Key pair > select the key pair > Security group existing > vpro-app-sg > Create launch template
+
+>   Create AutoScaling 
+
+-   EC2 > Auto Scaling Groups > Create Auto Scaling group > name > vpro-app01-asg > launch template > vpro-app01-asg-lt > next > network > select all AZ's > next > Attach to an existing load balancer > Choose from load balancer target group > vpro-app-tg > Health checks > Turn on Elastic Load Balancing health checks > next > Desired cap > 1 > Min cap > 1 > max cap > 4 > Automatic scaling > Target Tracking > cpu 50 % > next > notifications > next > Create Scaling Group
