@@ -361,3 +361,33 @@ sql dump file:
     -   `rm -rf /var/lib/tomcat10/webapps/`
     -   `cp /tmp/vpro-v2.war /var/lib/tomcat10/webapps/ROOT.war`
     -   `systemctl start tomcat10`
+
+<br>
+
+# 6) Setup ELB with HTTPS [Cert from Amazon Certificate Manager(ACM)]
+
+<br>
+
+>   Create a Target Group for load balancer
+
+-   EC2 > Target groups > Create target group > target type > instances > Target group name > vpro-app-tg > Protocol Port > 8080 > Advance health check > Health check port > override > 8080 > next > Register targets > vpro-app01 > include as pending below > Create target group
+
+>   Create Load balancer
+
+-   Load balancer is listening on port 80(HTTP) & port 443(HTTPS)
+
+-   Create a Certificate from ACM for secured connection
+
+    -   ACM > Request a certificate > Certificate type > Public > next > type the domain name(ex: *.satyamtripathi.xyz) > Validation > DNS > Request
+
+-   Add CNAME name and CNAME value record in your domain registrar
+
+    -   Godaddy > Domain > DNS > Add New Record > Type > CNAME > copy the cname from certificate,remove the domain from end > value > paste the value and remove the . from the end > save
+
+-   EC2 > Load balancers > Create load balancer > Application load balancer  > name > vpro-elb > network mapping > select all Availablity zone and subnets > Security groups > vpro-elb-sg > Listeners and routing > Default action > vpro-app-tg > add another listener for HTTPS and map the Target group > Secure listener settings > Certificate from ACM > select the certificate > Create load balancer
+
+-   Add the load balancer DNS name in domain Registrar
+
+    -   copy the DNS name from load balancer > Godaddy > Domain > DNS > Add New Record > name > vproapp > value > paste the dns name > Save
+
+>   To access the secure connection site: https://vproapp.satyamtripathi.xyz
